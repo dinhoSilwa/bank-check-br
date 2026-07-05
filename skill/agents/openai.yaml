@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bank Check BR"
+  short_description: "Valide bancos brasileiros e gere ícones SVG"
+  default_prompt: "Use $bank-check-br to validate Brazilian banks or generate bank SVG icons."
