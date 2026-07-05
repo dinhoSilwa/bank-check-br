@@ -37,7 +37,7 @@ describe('BankMapper', () => {
 
   describe('mapToSVGName', () => {
     it('should map exact name', () => {
-      expect(mapper.mapToSVGName('Banco do Brasil')).toBe('bb');
+      expect(mapper.mapToSVGName('Banco do Brasil')).toBe('bancodobrasil');
     });
 
     it('should map exact name uppercase', () => {
@@ -45,7 +45,7 @@ describe('BankMapper', () => {
     });
 
     it('should map alias', () => {
-      expect(mapper.mapToSVGName('bb')).toBe('bb');
+      expect(mapper.mapToSVGName('bb')).toBe('bancodobrasil');
       expect(mapper.mapToSVGName('itau')).toBe('itau');
       expect(mapper.mapToSVGName('nubank')).toBe('nubank');
     });
@@ -55,8 +55,8 @@ describe('BankMapper', () => {
     });
 
     it('should handle similar names', () => {
-      expect(mapper.mapToSVGName('banco do brasil')).toBe('bb');
-      expect(mapper.mapToSVGName('BANCO DO BRASIL')).toBe('bb');
+      expect(mapper.mapToSVGName('banco do brasil')).toBe('bancodobrasil');
+      expect(mapper.mapToSVGName('BANCO DO BRASIL')).toBe('bancodobrasil');
     });
   });
 

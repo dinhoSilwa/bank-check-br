@@ -1,6 +1,12 @@
 import { defineConfig } from 'vitest/config';
+import path from 'path';
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      'vue': path.resolve(__dirname, 'tests/__mocks__/vue.ts'),
+    },
+  },
   test: {
     globals: true,
     environment: 'node',
