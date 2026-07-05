@@ -87,6 +87,17 @@ export { SVGService } from './services/SVGService.js';
 export { BankMapper } from './mappers/BankMapper.js';
 export { MemoryCache } from './cache/MemoryCache.js';
 
+export {
+  isValidAgencyCode,
+  formatAgencyCode,
+  extractBankCodeFromString,
+  cleanBankName,
+  isValidISPB,
+  isValidBankCode,
+  formatBankCode,
+  normalizeString,
+} from './utils/validators.js';
+
 export type {
   Participante,
   Banco,
