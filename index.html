@@ -7,7 +7,13 @@
   <meta name="description" content="Biblioteca Node.js que valida bancos brasileiros e gera ícones SVG usando CSV oficial do Banco Central.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script>
+    // Aplica o tema salvo antes do primeiro paint para evitar flash
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  </script>
   <style>
     * {
       margin: 0;
@@ -16,11 +22,14 @@
     }
 
     :root {
-      --primary: #6c5ce7;
-      --primary-deep: #5a4bd1;
-      --primary-press: #4834d4;
-      --primary-soft: #a29bfe;
-      --primary-bg: rgba(108, 92, 231, 0.15);
+      --primary: #533afd;
+      --primary-deep: #4434d4;
+      --primary-press: #2e2b8c;
+      --primary-soft: #665efd;
+      --primary-subdued: #b9b9f9;
+      --primary-bg: rgba(83, 58, 253, 0.12);
+      --shadow-1: rgba(0, 55, 112, 0.08) 0 1px 3px;
+      --shadow-2: rgba(0, 55, 112, 0.08) 0 8px 24px, rgba(0, 55, 112, 0.04) 0 2px 6px;
       --ink: #ffffff;
       --ink-secondary: #e2e8f0;
       --ink-mute: #94a3b8;
@@ -29,15 +38,101 @@
       --canvas-cream: #1e293b;
       --hairline: #334155;
       --on-primary: #ffffff;
+      --nav-glass: rgba(15, 23, 42, 0.55);
+      --nav-border: rgba(148, 163, 184, 0.15);
+    }
+
+    html[data-theme="light"] {
+      --primary-subdued: #4434d4;
+      --ink: #0d253d;
+      --ink-secondary: #273951;
+      --ink-mute: #64748d;
+      --canvas: #ffffff;
+      --canvas-soft: #f6f9fc;
+      --canvas-cream: #f5e9d4;
+      --hairline: #e3e8ee;
+      --nav-glass: rgba(255, 255, 255, 0.7);
+      --nav-border: rgba(13, 37, 61, 0.08);
     }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      font-weight: 300;
+      font-weight: 400;
       color: var(--ink);
       background: var(--canvas);
       font-feature-settings: "ss01";
       line-height: 1.5;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    h1, h2, h3, .nav-logo {
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+    }
+
+    .nav-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      background: var(--nav-glass);
+      backdrop-filter: blur(16px) saturate(1.4);
+      -webkit-backdrop-filter: blur(16px) saturate(1.4);
+      border-bottom: 1px solid var(--nav-border);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: transparent;
+      border: 1px solid var(--hairline);
+      border-radius: 9999px;
+      color: var(--ink-mute);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover {
+      color: var(--primary-subdued);
+      border-color: var(--primary-soft);
+      background: var(--primary-bg);
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--ink);
+    }
+
+    .nav-bar .nav-github {
+      padding: 6px 16px;
+      min-height: 36px;
+      font-size: 14px;
+    }
+
+    .nav-bar i,
+    .nav-bar svg {
+      width: 16px;
+      height: 16px;
     }
 
     .hero {
@@ -47,7 +142,7 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      padding: 80px 24px;
+      padding: 140px 24px 90px;
     }
 
     .gradient-mesh {
@@ -56,13 +151,10 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: 
-        radial-gradient(ellipse at 10% 20%, rgba(108, 92, 231, 0.4) 0%, transparent 50%),
-        radial-gradient(ellipse at 30% 40%, rgba(162, 155, 254, 0.3) 0%, transparent 40%),
-        radial-gradient(ellipse at 50% 30%, rgba(139, 92, 246, 0.3) 0%, transparent 50%),
-        radial-gradient(ellipse at 70% 50%, rgba(99, 102, 241, 0.4) 0%, transparent 50%),
-        radial-gradient(ellipse at 90% 30%, rgba(168, 85, 247, 0.3) 0%, transparent 40%),
-        linear-gradient(180deg, rgba(15,23,42,0) 0%, rgba(15,23,42,1) 100%);
+      background:
+        radial-gradient(ellipse 90% 60% at 50% -10%, rgba(83, 58, 253, 0.22) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 80% 10%, rgba(139, 92, 246, 0.1) 0%, transparent 60%),
+        linear-gradient(180deg, transparent 0%, var(--canvas) 100%);
       z-index: 0;
     }
 
@@ -89,9 +181,9 @@
 
     .hero h1 {
       font-size: 56px;
-      font-weight: 300;
-      line-height: 1.03;
-      letter-spacing: -1.4px;
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -1.6px;
       margin-bottom: 24px;
       color: var(--ink);
     }
@@ -124,6 +216,7 @@
       background: var(--primary);
       color: var(--on-primary);
       padding: 12px 24px;
+      min-height: 44px;
       border-radius: 9999px;
       font-size: 16px;
       font-weight: 400;
@@ -131,6 +224,14 @@
       border: none;
       cursor: pointer;
       transition: background 0.2s;
+    }
+
+    .btn-primary i,
+    .btn-primary svg,
+    .btn-secondary i,
+    .btn-secondary svg {
+      width: 18px;
+      height: 18px;
     }
 
     .btn-primary:hover {
@@ -142,8 +243,9 @@
       align-items: center;
       gap: 8px;
       background: transparent;
-      color: var(--primary-soft);
+      color: var(--primary-subdued);
       padding: 12px 24px;
+      min-height: 44px;
       border-radius: 9999px;
       font-size: 16px;
       font-weight: 400;
@@ -165,18 +267,20 @@
 
     .install-section h2 {
       font-size: 32px;
-      font-weight: 300;
-      letter-spacing: -0.64px;
+      font-weight: 700;
+      letter-spacing: -0.8px;
       margin-bottom: 24px;
       color: var(--ink);
     }
 
     .code-block {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
       background: var(--canvas);
       border: 1px solid var(--hairline);
       color: var(--ink);
-      padding: 16px 32px;
+      padding: 16px 20px 16px 32px;
       border-radius: 12px;
       font-family: 'SF Mono', 'Fira Code', monospace;
       font-size: 18px;
@@ -188,6 +292,34 @@
       color: var(--primary-soft);
     }
 
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: var(--ink-mute);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      color: var(--primary-subdued);
+      background: var(--primary-bg);
+    }
+
+    .copy-btn i,
+    .copy-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .copy-btn.copied {
+      color: #4ade80;
+    }
+
     .features {
       padding: 96px 24px;
       max-width: 1200px;
@@ -196,8 +328,8 @@
 
     .features h2 {
       font-size: 48px;
-      font-weight: 300;
-      letter-spacing: -0.96px;
+      font-weight: 700;
+      letter-spacing: -1.2px;
       text-align: center;
       margin-bottom: 64px;
       color: var(--ink);
@@ -214,12 +346,13 @@
       border: 1px solid var(--hairline);
       border-radius: 12px;
       padding: 32px;
+      box-shadow: var(--shadow-1);
       transition: all 0.2s;
     }
 
     .feature-card:hover {
       border-color: var(--primary);
-      box-shadow: 0 0 20px rgba(108, 92, 231, 0.2);
+      box-shadow: 0 0 20px rgba(83, 58, 253, 0.2);
     }
 
     .feature-icon {
@@ -231,13 +364,20 @@
       align-items: center;
       justify-content: center;
       margin-bottom: 16px;
-      font-size: 24px;
+    }
+
+    .feature-icon i,
+    .feature-icon svg {
+      width: 24px;
+      height: 24px;
+      color: var(--primary-subdued);
+      stroke-width: 1.5;
     }
 
     .feature-card h3 {
       font-size: 20px;
-      font-weight: 300;
-      letter-spacing: -0.2px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
       margin-bottom: 8px;
       color: var(--ink);
     }
@@ -255,8 +395,8 @@
 
     .banks-section h2 {
       font-size: 48px;
-      font-weight: 300;
-      letter-spacing: -0.96px;
+      font-weight: 700;
+      letter-spacing: -1.2px;
       text-align: center;
       margin-bottom: 16px;
       color: var(--ink);
@@ -312,8 +452,8 @@
 
     .code-section h2 {
       font-size: 48px;
-      font-weight: 300;
-      letter-spacing: -0.96px;
+      font-weight: 700;
+      letter-spacing: -1.2px;
       text-align: center;
       margin-bottom: 16px;
       color: var(--ink);
@@ -330,31 +470,99 @@
       background: #020617;
       border: 1px solid var(--hairline);
       border-radius: 12px;
-      padding: 32px;
+      overflow: hidden;
+      box-shadow: var(--shadow-2);
+    }
+
+    .code-window-header {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      background: #0b1120;
+      border-bottom: 1px solid var(--hairline);
+      position: relative;
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .window-dots span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .dot-close { background: #ff5f57; }
+    .dot-min   { background: #febc2e; }
+    .dot-max   { background: #28c840; }
+
+    .window-title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    .window-title i,
+    .window-title svg {
+      width: 14px;
+      height: 14px;
+      color: #b9b9f9;
+    }
+
+    /* janelas de código permanecem dark em ambos os temas */
+    .code-window-header .copy-btn {
+      color: #94a3b8;
+    }
+
+    .code-window-header .copy-btn:hover {
+      color: #b9b9f9;
+      background: rgba(83, 58, 253, 0.2);
+    }
+
+    .code-window-header .copy-btn.copied {
+      color: #4ade80;
+    }
+
+    .code-window-body {
+      padding: 24px 32px;
       overflow-x: auto;
     }
 
-    .code-example pre {
+    .code-example pre,
+    .modal-window pre {
       font-family: 'SF Mono', 'Fira Code', monospace;
       font-size: 14px;
-      line-height: 1.6;
-      color: #e2e8f0;
+      line-height: 1.7;
+      color: #f1f5f9;
     }
 
-    .code-example .keyword {
-      color: var(--primary-soft);
+    .code-example .keyword,
+    .modal-window .keyword {
+      color: #c084fc;
     }
 
-    .code-example .string {
-      color: #7dd3fc;
+    .code-example .string,
+    .modal-window .string {
+      color: #6ee7b7;
     }
 
-    .code-example .comment {
-      color: #64748d;
+    .code-example .comment,
+    .modal-window .comment {
+      color: #7c8ea6;
+      font-style: italic;
     }
 
-    .code-example .function {
-      color: #a78bfa;
+    .code-example .function,
+    .modal-window .function {
+      color: #60a5fa;
     }
 
     .api-section {
@@ -364,47 +572,165 @@
 
     .api-section h2 {
       font-size: 48px;
-      font-weight: 300;
-      letter-spacing: -0.96px;
+      font-weight: 700;
+      letter-spacing: -1.2px;
       text-align: center;
       margin-bottom: 48px;
       color: var(--ink);
     }
 
-    .api-table {
-      max-width: 800px;
+    .api-grid {
+      max-width: 1000px;
       margin: 0 auto;
-      border-collapse: collapse;
-      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
     }
 
-    .api-table th,
-    .api-table td {
-      padding: 16px 24px;
-      text-align: left;
-      border-bottom: 1px solid var(--hairline);
+    .api-card {
+      background: var(--canvas);
+      border: 1px solid var(--hairline);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      transition: all 0.2s;
+      cursor: pointer;
     }
 
-    .api-table th {
-      font-size: 13px;
+    .api-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-2);
+    }
+
+    .api-card-icon {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      background: var(--primary-bg);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .api-card-icon i,
+    .api-card-icon svg {
+      width: 20px;
+      height: 20px;
+      color: var(--primary-subdued);
+      stroke-width: 1.75;
+    }
+
+    .api-card-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .api-card code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink);
+      font-feature-settings: "tnum";
+    }
+
+    .api-card code .fn {
+      color: var(--primary-subdued);
+    }
+
+    .api-badge {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 10px;
       font-weight: 500;
       text-transform: uppercase;
-      letter-spacing: 0.1px;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 9999px;
+    }
+
+    .api-badge-async {
+      background: var(--primary-bg);
+      color: var(--primary-subdued);
+    }
+
+    .api-badge-sync {
+      background: rgba(148, 163, 184, 0.12);
       color: var(--ink-mute);
     }
 
-    .api-table td {
-      font-size: 15px;
-      color: var(--ink-secondary);
+    .api-card p {
+      font-size: 14px;
+      color: var(--ink-mute);
+      line-height: 1.5;
     }
 
-    .api-table code {
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 13px;
-      background: var(--primary-bg);
-      color: var(--primary-soft);
-      padding: 4px 8px;
-      border-radius: 4px;
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(2, 6, 23, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .modal-overlay.open {
+      display: flex;
+      animation: modal-fade 0.15s ease-out;
+    }
+
+    .modal-window {
+      width: 100%;
+      max-width: 680px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      background: #020617;
+      border: 1px solid var(--hairline);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-2), 0 24px 64px rgba(0, 0, 0, 0.5);
+      animation: modal-pop 0.18s ease-out;
+    }
+
+    @keyframes modal-fade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes modal-pop {
+      from { opacity: 0; transform: translateY(12px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-window .code-window-header {
+      flex-shrink: 0;
+    }
+
+    .modal-window .dot-close {
+      cursor: pointer;
+      transition: filter 0.15s;
+    }
+
+    .modal-window .dot-close:hover {
+      filter: brightness(1.25);
+    }
+
+    .modal-copy {
+      margin-left: auto;
+    }
+
+    .modal-window .code-window-body {
+      overflow-y: auto;
     }
 
     .cta-section {
@@ -414,8 +740,8 @@
 
     .cta-section h2 {
       font-size: 48px;
-      font-weight: 300;
-      letter-spacing: -0.96px;
+      font-weight: 700;
+      letter-spacing: -1.2px;
       margin-bottom: 16px;
       color: var(--ink);
     }
@@ -429,51 +755,47 @@
     footer {
       background: var(--canvas);
       border-top: 1px solid var(--hairline);
-      padding: 64px 24px;
+      padding: 40px 24px;
     }
 
-    .footer-content {
+    .footer-inner {
       max-width: 1200px;
       margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
-    .footer-col h4 {
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 16px;
-      color: var(--ink);
-    }
-
-    .footer-col a {
-      display: block;
-      font-size: 14px;
+    .footer-copy {
+      font-size: 13px;
       color: var(--ink-mute);
-      text-decoration: none;
-      margin-bottom: 8px;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-social a {
+      display: inline-flex;
+      color: var(--ink-mute);
       transition: color 0.2s;
     }
 
-    .footer-col a:hover {
-      color: var(--primary-soft);
+    .footer-social a:hover {
+      color: var(--primary-subdued);
     }
 
-    .footer-bottom {
-      max-width: 1200px;
-      margin: 48px auto 0;
-      padding-top: 24px;
-      border-top: 1px solid var(--hairline);
-      text-align: center;
-      font-size: 13px;
-      color: var(--ink-mute);
+    .footer-social i,
+    .footer-social svg {
+      width: 20px;
+      height: 20px;
     }
 
     @media (max-width: 768px) {
       .hero h1 {
         font-size: 36px;
-        letter-spacing: -0.64px;
+        letter-spacing: -1px;
       }
 
       .features h2,
@@ -482,7 +804,7 @@
       .api-section h2,
       .cta-section h2 {
         font-size: 32px;
-        letter-spacing: -0.64px;
+        letter-spacing: -0.8px;
       }
 
       .hero,
@@ -493,17 +815,46 @@
       .cta-section {
         padding: 64px 16px;
       }
+
+      .footer-inner {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+
+      .hero {
+        padding-top: 120px;
+      }
+
+      .api-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
+
+  <!-- Nav -->
+  <nav class="nav-bar">
+    <div class="nav-inner">
+      <span class="nav-logo">bank-check-br</span>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Alternar tema">
+          <i data-lucide="sun"></i>
+        </button>
+        <a href="https://github.com/dinhoSilwa/bank-check-br" class="btn-secondary nav-github">
+          <i data-lucide="github"></i> GitHub
+        </a>
+      </div>
+    </div>
+  </nav>
 
   <!-- Hero -->
   <section class="hero">
     <div class="gradient-mesh"></div>
     <div class="hero-content">
       <div class="hero-badge">
-        <span>📦</span> v1.0.0 — MIT License
+        <i data-lucide="package" style="width:14px;height:14px;"></i> v1.0.0 — MIT License
       </div>
       <h1>Valide bancos brasileiros<br>com <span>simplicidade</span></h1>
       <p>Biblioteca Node.js que valida bancos brasileiros e gera ícones SVG usando CSV oficial do Banco Central.</p>
@@ -512,7 +863,7 @@
           npm install bank-check-br
         </a>
         <a href="https://github.com/dinhoSilwa/bank-check-br" class="btn-secondary">
-          GitHub →
+          <i data-lucide="github"></i> GitHub
         </a>
       </div>
     </div>
@@ -523,6 +874,9 @@
     <h2>Comece em segundos</h2>
     <div class="code-block">
       <span>$</span> npm install bank-check-br
+      <button class="copy-btn" onclick="copyInstall(this)" aria-label="Copiar comando">
+        <i data-lucide="copy"></i>
+      </button>
     </div>
   </section>
 
@@ -531,32 +885,32 @@
     <h2>Por que usar bank-check-br?</h2>
     <div class="features-grid">
       <div class="feature-card">
-        <div class="feature-icon">🏦</div>
+        <div class="feature-icon"><i data-lucide="landmark"></i></div>
         <h3>Fonte Oficial</h3>
         <p>Dados do CSV oficial do Banco Central do Brasil. Sempre atualizados e confiáveis.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">⚡</div>
+        <div class="feature-icon"><i data-lucide="zap"></i></div>
         <h3>Cache em Memória</h3>
         <p>Consultas rápidas após a primeira carga. Cache inteligente com timestamp.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🎨</div>
+        <div class="feature-icon"><i data-lucide="image"></i></div>
         <h3>40+ Ícones SVG</h3>
         <p>Ícones de bancos brasileiros via @edusites/bancos-brasil. Prontos para usar.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🔧</div>
+        <div class="feature-icon"><i data-lucide="settings"></i></div>
         <h3>Zero Config</h3>
         <p>Funciona sem configuração. API intuitiva e simples de usar.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">📝</div>
+        <div class="feature-icon"><i data-lucide="code-2"></i></div>
         <h3>100% TypeScript</h3>
         <p>Tipos completos para melhor DX. Suporte a ESM e CJS.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🚀</div>
+        <div class="feature-icon"><i data-lucide="rocket"></i></div>
         <h3>Leve e Rápido</h3>
         <p>Bundle ~16KB. Zero dependências desnecessárias.</p>
       </div>
@@ -580,15 +934,14 @@
       <div class="bank-card">
         <svg viewBox="0 0 108 108" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="108" height="108" rx="16" fill="#EC7000"/>
-          <text x="54" y="68" text-anchor="middle" font-size="48" font-weight="700" fill="white">it</text>
+          <text x="54" y="66" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#FFFFFF">itaú</text>
         </svg>
         <span>Itaú</span>
       </div>
       <div class="bank-card">
         <svg viewBox="0 0 108 108" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="108" height="108" rx="16" fill="#820AD1"/>
-          <path d="M54 30C38 30 25 43 25 59V78H40V62C40 62 40 48 40 45C39 34 32 27 22 27C19 30 17 34 17 40C17 41 17 44 17 48C17 50 17 52 17 55C17 65 17 78 17 78H0V53C0 52 0 51 0 50C0 48 0 46 0 44C0 41 0 39 1 37C4 31 10 27 17 27C17 27 17 27 19 27C22 27 27 25 32 25C42 25 49 32 50 43C50 47 50 52 50 58V78H35V62C35 62 35 48 35 45C34 34 27 27 17 27" fill="#820AD1"/>
-          <path d="M108 58C108 57 108 56 108 55V51V25H94C94 25 94 37 94 48C94 51 94 53 94 55C94 60 92 64 89 67C79 67 72 60 72 49V25H58V47C58 48 58 49 58 49C58 55 58 60 58 64C59 75 66 82 76 82C81 82 86 81 89 77C89 77 89 77 90 77C96 77 103 73 106 67C107 64 108 61 108 58Z" fill="#820AD1"/>
+          <text x="54" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="44" font-weight="700" fill="#FFFFFF">nu</text>
         </svg>
         <span>Nubank</span>
       </div>
@@ -663,6 +1016,17 @@
     <h2>Simples de usar</h2>
     <p>Valide bancos e gere SVGs em poucas linhas</p>
     <div class="code-example">
+      <div class="code-window-header">
+        <div class="window-dots">
+          <span class="dot-close"></span>
+          <span class="dot-min"></span>
+          <span class="dot-max"></span>
+        </div>
+        <div class="window-title">
+          <i data-lucide="file-code"></i> exemplo.ts
+        </div>
+      </div>
+      <div class="code-window-body">
 <pre><span class="comment">// Importar funções</span>
 <span class="keyword">import</span> { <span class="function">validarBanco</span>, <span class="function">buscarBanco</span>, <span class="function">gerarSVG</span> } <span class="keyword">from</span> <span class="string">'bank-check-br'</span>;
 
@@ -676,54 +1040,95 @@ console.<span class="function">log</span>(comSvg?.svg); <span class="comment">//
 
 <span class="comment">// Gerar SVG diretamente</span>
 <span class="keyword">const</span> svg = <span class="function">gerarSVG</span>(<span class="string">'Nubank'</span>);</pre>
+      </div>
     </div>
   </section>
 
   <!-- API -->
   <section class="api-section">
     <h2>API Completa</h2>
-    <table class="api-table">
-      <thead>
-        <tr>
-          <th>Função</th>
-          <th>Descrição</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><code>validarBanco(codigo)</code></td>
-          <td>Valida e retorna banco por código</td>
-        </tr>
-        <tr>
-          <td><code>buscarBanco(codigo)</code></td>
-          <td>Busca banco por código de agência</td>
-        </tr>
-        <tr>
-          <td><code>buscarBancoPorISPB(ispb)</code></td>
-          <td>Busca banco por ISPB</td>
-        </tr>
-        <tr>
-          <td><code>buscarBancosPorNome(nome)</code></td>
-          <td>Busca bancos por nome</td>
-        </tr>
-        <tr>
-          <td><code>listarBancos()</code></td>
-          <td>Lista todos os bancos</td>
-        </tr>
-        <tr>
-          <td><code>listarBancosComIcone()</code></td>
-          <td>Lista bancos com ícone SVG</td>
-        </tr>
-        <tr>
-          <td><code>gerarSVG(nome)</code></td>
-          <td>Gera SVG do banco</td>
-        </tr>
-        <tr>
-          <td><code>recarregarDados()</code></td>
-          <td>Recarrega dados do BCB</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="api-grid">
+      <div class="api-card" onclick="openApiModal('validarBanco')">
+        <div class="api-card-icon"><i data-lucide="shield-check"></i></div>
+        <div>
+          <div class="api-card-head">
+            <code><span class="fn">validarBanco</span>(codigo)</code>
+            <span class="api-badge api-badge-async">async</span>
+          </div>
+          <p>Valida e retorna banco por código</p>
+        </div>
+      </div>
+      <div class="api-card" onclick="openApiModal('buscarBanco')">
+        <div class="api-card-icon"><i data-lucide="search"></i></div>
+        <div>
+          <div class="api-card-head">
+            <code><span class="fn">buscarBanco</span>(codigo)</code>
+            <span class="api-badge api-badge-async">async</span>
+          </div>
+          <p>Busca banco por código de agência</p>
+        </div>
+      </div>
+      <div class="api-card" onclick="openApiModal('buscarBancoPorISPB')">
+        <div class="api-card-icon"><i data-lucide="hash"></i></div>
+        <div>
+          <div class="api-card-head">
+            <code><span class="fn">buscarBancoPorISPB</span>(ispb)</code>
+            <span class="api-badge api-badge-async">async</span>
+          </div>
+          <p>Busca banco por ISPB</p>
+        </div>
+      </div>
+      <div class="api-card" onclick="openApiModal('buscarBancosPorNome')">
+        <div class="api-card-icon"><i data-lucide="type"></i></div>
+        <div>
+          <div class="api-card-head">
+            <code><span class="fn">buscarBancosPorNome</span>(nome)</code>
+            <span class="api-badge api-badge-async">async</span>
+          </div>
+          <p>Busca bancos por nome</p>
+        </div>
+      </div>
+      <div class="api-card" onclick="openApiModal('listarBancos')">
+        <div class="api-card-icon"><i data-lucide="list"></i></div>
+        <div>
+          <div class="api-card-head">
+            <code><span class="fn">listarBancos</span>()</code>
+            <span class="api-badge api-badge-async">async</span>
+          </div>
+          <p>Lista todos os bancos</p>
+        </div>
+      </div>
+      <div class="api-card" onclick="openApiModal('listarBancosComIcone')">
+        <div class="api-card-icon"><i data-lucide="layout-grid"></i></div>
+        <div>
+          <div class="api-card-head">
+            <code><span class="fn">listarBancosComIcone</span>()</code>
+            <span class="api-badge api-badge-async">async</span>
+          </div>
+          <p>Lista bancos com ícone SVG</p>
+        </div>
+      </div>
+      <div class="api-card" onclick="openApiModal('gerarSVG')">
+        <div class="api-card-icon"><i data-lucide="image"></i></div>
+        <div>
+          <div class="api-card-head">
+            <code><span class="fn">gerarSVG</span>(nome)</code>
+            <span class="api-badge api-badge-sync">sync</span>
+          </div>
+          <p>Gera SVG do banco</p>
+        </div>
+      </div>
+      <div class="api-card" onclick="openApiModal('recarregarDados')">
+        <div class="api-card-icon"><i data-lucide="refresh-cw"></i></div>
+        <div>
+          <div class="api-card-head">
+            <code><span class="fn">recarregarDados</span>()</code>
+            <span class="api-badge api-badge-async">async</span>
+          </div>
+          <p>Recarrega dados do BCB</p>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- CTA -->
@@ -735,42 +1140,183 @@ console.<span class="function">log</span>(comSvg?.svg); <span class="comment">//
         npm install bank-check-br
       </a>
       <a href="https://github.com/dinhoSilwa/bank-check-br" class="btn-secondary">
-        Ver no GitHub
+        Ver no GitHub <i data-lucide="arrow-right"></i>
       </a>
     </div>
   </section>
 
   <!-- Footer -->
   <footer>
-    <div class="footer-content">
-      <div class="footer-col">
-        <h4>bank-check-br</h4>
-        <a href="#">Documentação</a>
-        <a href="#">API Reference</a>
-        <a href="#">Exemplos</a>
+    <div class="footer-inner">
+      <p class="footer-copy">© 2026 Claudio Silwa · MIT License</p>
+      <div class="footer-social">
+        <a href="https://github.com/dinhoSilwa" aria-label="GitHub" target="_blank" rel="noopener">
+          <i data-lucide="github"></i>
+        </a>
+        <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener">
+          <i data-lucide="linkedin"></i>
+        </a>
+        <a href="https://www.instagram.com/claudiosilwa_/" aria-label="Instagram" target="_blank" rel="noopener">
+          <i data-lucide="instagram"></i>
+        </a>
       </div>
-      <div class="footer-col">
-        <h4>Comunidade</h4>
-        <a href="https://github.com/dinhoSilwa/bank-check-br">GitHub</a>
-        <a href="https://github.com/dinhoSilwa/bank-check-br/issues">Issues</a>
-        <a href="https://github.com/dinhoSilwa/bank-check-br/pulls">Pull Requests</a>
-      </div>
-      <div class="footer-col">
-        <h4>Mais</h4>
-        <a href="https://www.npmjs.com/package/bank-check-br">npm</a>
-        <a href="#">CHANGELOG</a>
-        <a href="#">Licença MIT</a>
-      </div>
-      <div class="footer-col">
-        <h4>Autor</h4>
-        <a href="https://github.com/dinhoSilwa">Dinho Silva</a>
-        <a href="https://github.com/dinhoSilwa">Desenvolvedor Fullstack</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      © 2026 bank-check-br. MIT License.
     </div>
   </footer>
+
+  <!-- Modal de exemplo da API -->
+  <div class="modal-overlay" id="apiModal">
+    <div class="modal-window">
+      <div class="code-window-header">
+        <div class="window-dots">
+          <span class="dot-close" onclick="closeApiModal()" title="Fechar"></span>
+          <span class="dot-min"></span>
+          <span class="dot-max"></span>
+        </div>
+        <div class="window-title">
+          <i data-lucide="file-code"></i> <span id="modalFileName">exemplo.ts</span>
+        </div>
+        <button class="copy-btn modal-copy" onclick="copyModalCode(this)" aria-label="Copiar código">
+          <i data-lucide="copy"></i>
+        </button>
+      </div>
+      <div class="code-window-body">
+        <pre id="modalCode"></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lucide fixado em 0.462.0: brand icons (github/linkedin/instagram) foram removidos na v1.x -->
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+  <script>
+    lucide.createIcons();
+
+    function updateThemeIcon() {
+      var btn = document.getElementById('themeToggle');
+      var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      btn.innerHTML = '<i data-lucide="' + (isLight ? 'moon' : 'sun') + '"></i>';
+      lucide.createIcons();
+    }
+
+    function toggleTheme() {
+      var root = document.documentElement;
+      var isLight = root.getAttribute('data-theme') === 'light';
+      if (isLight) {
+        root.removeAttribute('data-theme');
+      } else {
+        root.setAttribute('data-theme', 'light');
+      }
+      localStorage.setItem('theme', isLight ? 'dark' : 'light');
+      updateThemeIcon();
+    }
+
+    updateThemeIcon();
+
+    function copyInstall(btn) {
+      navigator.clipboard.writeText('npm install bank-check-br').then(function () {
+        btn.classList.add('copied');
+        btn.innerHTML = '<i data-lucide="check"></i>';
+        lucide.createIcons();
+        setTimeout(function () {
+          btn.classList.remove('copied');
+          btn.innerHTML = '<i data-lucide="copy"></i>';
+          lucide.createIcons();
+        }, 2000);
+      });
+    }
+
+    // Exemplos reais de uso — assinaturas conferidas em src/index.ts e src/types/index.ts
+    var apiExamples = {
+      validarBanco: {
+        file: 'validar-banco.ts',
+        code: "import { validarBanco } from 'bank-check-br';\n\n// Valida o código recebido de um formulário de transferência\nconst banco = await validarBanco('001');\n\nif (banco) {\n  console.log(banco.nomeExtenso); // \"Banco do Brasil S.A.\"\n  console.log(banco.ispb);        // \"00000000\"\n} else {\n  console.log('Código de banco inválido');\n}"
+      },
+      buscarBanco: {
+        file: 'buscar-banco.ts',
+        code: "import { buscarBanco } from 'bank-check-br';\n\n// Busca o banco e já inclui o ícone SVG pronto para renderizar\nconst banco = await buscarBanco('341', { includeSvg: true });\n\nconsole.log(banco?.nomeReduzido); // \"ITAÚ UNIBANCO S.A.\"\nconsole.log(banco?.svg);          // \"<svg>...</svg>\""
+      },
+      buscarBancoPorISPB: {
+        file: 'buscar-por-ispb.ts',
+        code: "import { buscarBancoPorISPB } from 'bank-check-br';\n\n// ISPB é o identificador usado no PIX e no SPB\nconst banco = await buscarBancoPorISPB('60701190');\n\nconsole.log(banco?.nomeExtenso);  // \"Itaú Unibanco S.A.\"\nconsole.log(banco?.numeroCodigo); // \"341\""
+      },
+      buscarBancosPorNome: {
+        file: 'buscar-por-nome.ts',
+        code: "import { buscarBancosPorNome } from 'bank-check-br';\n\n// Autocomplete de banco em um formulário\nconst bancos = await buscarBancosPorNome('nu');\n\nbancos.forEach(function (banco) {\n  console.log(banco.numeroCodigo + ' — ' + banco.nomeReduzido);\n});"
+      },
+      listarBancos: {
+        file: 'listar-bancos.ts',
+        code: "import { listarBancos } from 'bank-check-br';\n\n// Todos os bancos do CSV oficial do Banco Central\nconst todos = await listarBancos();\nconsole.log('Total: ' + todos.length + ' bancos');\n\n// Filtrando apenas os que possuem ícone SVG\nconst comSvg = await listarBancos({ comSvg: true });"
+      },
+      listarBancosComIcone: {
+        file: 'listar-com-icone.ts',
+        code: "import { listarBancosComIcone } from 'bank-check-br';\n\n// Lista pronta para montar um seletor visual de bancos\nconst bancos = await listarBancosComIcone({\n  svgOptions: { width: 32, className: 'bank-icon' },\n});\n\nconsole.log(bancos[0].svgName); // nome do ícone\nconsole.log(bancos[0].svg);     // \"<svg>...</svg>\""
+      },
+      gerarSVG: {
+        file: 'gerar-svg.ts',
+        code: "import { SVGService } from 'bank-check-br';\n\n// gerarSVG é um método síncrono do SVGService\nconst svgService = new SVGService();\n\nconst svg = svgService.gerarSVG('Nubank', {\n  width: 48,\n  className: 'bank-icon',\n});\n\nconsole.log(svg); // \"<svg>...</svg>\" ou null"
+      },
+      recarregarDados: {
+        file: 'recarregar-dados.ts',
+        code: "import { recarregarDados, getCacheStats } from 'bank-check-br';\n\n// Força nova carga do CSV do Banco Central\nawait recarregarDados();\n\nconst stats = getCacheStats();\nconsole.log(stats.bankCacheSize);\nconsole.log(stats.lastLoadTimestamp);"
+      }
+    };
+
+    var currentModalCode = '';
+
+    function highlightCode(code) {
+      function esc(s) {
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+      }
+      return code.split('\n').map(function (line) {
+        var idx = line.indexOf('//');
+        var codePart = idx === -1 ? line : line.slice(0, idx);
+        var commentPart = idx === -1 ? '' : line.slice(idx);
+        var html = esc(codePart)
+          .replace(/('[^']*')/g, '<span class="string">$1</span>')
+          .replace(/\b(import|from|const|await|new|if|else|function|null|var)\b/g, '<span class="keyword">$1</span>')
+          .replace(/(\w+)\(/g, '<span class="function">$1</span>(');
+        if (commentPart) {
+          html += '<span class="comment">' + esc(commentPart) + '</span>';
+        }
+        return html;
+      }).join('\n');
+    }
+
+    function openApiModal(name) {
+      var example = apiExamples[name];
+      if (!example) return;
+      currentModalCode = example.code;
+      document.getElementById('modalFileName').textContent = example.file;
+      document.getElementById('modalCode').innerHTML = highlightCode(example.code);
+      document.getElementById('apiModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeApiModal() {
+      document.getElementById('apiModal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('apiModal').addEventListener('click', function (e) {
+      if (e.target === this) closeApiModal();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeApiModal();
+    });
+
+    function copyModalCode(btn) {
+      navigator.clipboard.writeText(currentModalCode).then(function () {
+        btn.classList.add('copied');
+        btn.innerHTML = '<i data-lucide="check"></i>';
+        lucide.createIcons();
+        setTimeout(function () {
+          btn.classList.remove('copied');
+          btn.innerHTML = '<i data-lucide="copy"></i>';
+          lucide.createIcons();
+        }, 2000);
+      });
+    }
+  </script>
 
 </body>
 </html>
