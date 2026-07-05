@@ -126,6 +126,22 @@ npm run format   # Formatar código
 
 [MIT](LICENSE)
 
+## AI Assistant Skill
+
+Esta lib inclui uma skill para assistentes de IA (Codex, Claude Code, etc.).
+
+Para instalar, copie a pasta `skill/` para o diretório de skills do seu assistente:
+
+```bash
+# Codex/OpenAI
+cp -r skill/ ~/.codex/skills/bank-check-br/
+
+# Claude Code
+cp -r skill/ ~/.claude/skills/bank-check-br/
+```
+
+A skill fornece contexto completo sobre a API, tipos e exemplos de uso.
+
 ## Autor
 
 [Dinho Silva](https://github.com/dinhoSilwa) - Desenvolvedor Fullstack
