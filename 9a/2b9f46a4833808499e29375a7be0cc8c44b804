@@ -1,0 +1,19 @@
+index.html
+  s_8a873b460eddfb::t_e44a7512f44456 19-30,60-65,80-81,100,144-145,151,171,176-178,203,213,217,221-222,242,252,262,274,276,290,302,304,319,330-331,349,357,371,398,405,420,460,488,578,582-583,589-591,603-604,610-611,617-618,620,624-625,631-633,639-640,644-657
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "9a2b9f46a4833808499e29375a7be0cc8c44b804",
+  "prompts": {},
+  "sessions": {
+    "s_8a873b460eddfb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d5fed8e4-37ea-4052-9e0b-07e8db4f6339",
+        "model": "unknown"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}
