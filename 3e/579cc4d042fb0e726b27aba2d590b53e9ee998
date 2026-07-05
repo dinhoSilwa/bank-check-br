@@ -1,0 +1,19 @@
+src/parser/CSVParser.ts
+  s_8a873b460eddfb::t_0851635f121f22 17,21,30-37,63,73
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "3e579cc4d042fb0e726b27aba2d590b53e9ee998",
+  "prompts": {},
+  "sessions": {
+    "s_8a873b460eddfb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d5fed8e4-37ea-4052-9e0b-07e8db4f6339",
+        "model": "unknown"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}
