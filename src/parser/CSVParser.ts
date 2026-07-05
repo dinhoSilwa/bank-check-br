@@ -6,8 +6,6 @@
 
 import type { Participante } from '../types/index.js';
 
-const SEPARATOR = ';';
-
 export class CSVParser {
   parseCSV(csvTexto: string): Participante[] {
     const lines = csvTexto.split('\n').filter((line) => line.trim());
@@ -16,10 +14,11 @@ export class CSVParser {
       return [];
     }
 
+    const separator = this.detectSeparator(lines[0]);
     const participants: Participante[] = [];
 
     for (let i = 1; i < lines.length; i++) {
-      const participant = this.parseLine(lines[i]);
+      const participant = this.parseLine(lines[i], separator);
       if (participant) {
         participants.push(participant);
       }
@@ -28,8 +27,14 @@ export class CSVParser {
     return participants;
   }
 
-  private parseLine(line: string): Participante | null {
-    const columns = this.parseColumns(line);
+  private detectSeparator(header: string): string {
+    const commaCount = (header.match(/,/g) || []).length;
+    const semicolonCount = (header.match(/;/g) || []).length;
+    return commaCount >= semicolonCount ? ',' : ';';
+  }
+
+  private parseLine(line: string, separator: string): Participante | null {
+    const columns = this.parseColumns(line, separator);
 
     if (columns.length < 7) {
       return null;
@@ -55,7 +60,7 @@ export class CSVParser {
     };
   }
 
-  private parseColumns(line: string): string[] {
+  private parseColumns(line: string, separator: string): string[] {
     const columns: string[] = [];
     let current = '';
     let inQuotes = false;
@@ -65,7 +70,7 @@ export class CSVParser {
 
       if (char === '"') {
         inQuotes = !inQuotes;
-      } else if (char === SEPARATOR && !inQuotes) {
+      } else if (char === separator && !inQuotes) {
         columns.push(current);
         current = '';
       } else {
