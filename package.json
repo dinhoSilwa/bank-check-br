@@ -1,0 +1,58 @@
+{
+  "name": "bank-check-br",
+  "version": "1.0.0",
+  "description": "Biblioteca Node.js que valida bancos brasileiros e gera ícones SVG usando CSV oficial do Banco Central",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\""
+  },
+  "keywords": [
+    "bancos",
+    "bancos-brasileiros",
+    "bank",
+    "brazilian-banks",
+    "svg",
+    "icons",
+    "validation",
+    "ispb",
+    "compe",
+    "bcb",
+    "banco-central"
+  ],
+  "author": "Dinho Silva (https://github.com/dinhoSilwa)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dinhoSilwa/bank-check-br.git"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.62.1",
+    "@typescript-eslint/parser": "^8.62.1",
+    "eslint": "^10.6.0",
+    "prettier": "^3.9.4",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
+  },
+  "dependencies": {
+    "@edusites/bancos-brasil": "^1.2.0"
+  }
+}
