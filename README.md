@@ -130,17 +130,31 @@ npm run format   # Formatar código
 
 Esta lib inclui uma skill para assistentes de IA (Codex, Claude Code, etc.).
 
-Para instalar, copie a pasta `skill/` para o diretório de skills do seu assistente:
+### Instalação Automática
+
+```bash
+npm run install:skill
+```
+
+Detecta automaticamente o assistente instalado e copia a skill.
+
+### Instalação Manual
 
 ```bash
 # Codex/OpenAI
-cp -r skill/ ~/.codex/skills/bank-check-br/
+cp -r node_modules/bank-check-br/skill/ ~/.codex/skills/bank-check-br/
 
 # Claude Code
-cp -r skill/ ~/.claude/skills/bank-check-br/
+cp -r node_modules/bank-check-br/skill/ ~/.claude/skills/bank-check-br/
 ```
 
-A skill fornece contexto completo sobre a API, tipos e exemplos de uso.
+### O que a skill faz
+
+A skill fornece contexto completo sobre a API, tipos e exemplos de uso para que a AI possa ajudar a:
+- Validar bancos brasileiros
+- Gerar SVGs de bancos
+- Buscar por código de agência ou ISPB
+- Listar bancos com filtros
 
 ## Autor
 
