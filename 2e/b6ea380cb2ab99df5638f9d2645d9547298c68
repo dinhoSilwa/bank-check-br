@@ -1,0 +1,25 @@
+skill/SKILL.md
+  s_8a873b460eddfb::t_c9c9429ee211f9 1-123
+skill/agents/openai.yaml
+  s_8a873b460eddfb::t_82044e67225a1c 1-4
+skill/references/api-reference.md
+  s_8a873b460eddfb::t_b6f2c7ca3c2762 1-254
+skill/references/examples.md
+  s_8a873b460eddfb::t_8ae0d21b100119 1-162
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "2eb6ea380cb2ab99df5638f9d2645d9547298c68",
+  "prompts": {},
+  "sessions": {
+    "s_8a873b460eddfb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d5fed8e4-37ea-4052-9e0b-07e8db4f6339",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Claudio Silwa <claudiosilva.one@gmail.com>"
+    }
+  }
+}
