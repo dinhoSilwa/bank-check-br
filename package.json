@@ -19,6 +19,7 @@
   },
   "files": [
     "dist",
+    "src/vendored",
     "skill",
     "README.md",
     "LICENSE",
@@ -74,7 +75,5 @@
     "vitest": "^4.1.9",
     "vue": "^3.5.39"
   },
-  "dependencies": {
-    "@edusites/bancos-brasil": "^1.2.0"
-  }
+  "dependencies": {}
 }

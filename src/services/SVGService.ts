@@ -4,8 +4,10 @@
  * @phase: PHASE-2
  */
 
-// @ts-expect-error - @edusites/bancos-brasil doesn't have TypeScript types
-import { svgBanco } from '@edusites/bancos-brasil';
+// Vendored from @edusites/bancos-brasil@1.2.0 (MIT) — apenas core.js + icones.js
+// SvgBanco.js (componente Vue) foi excluído para evitar dependência de Vue em runtime
+// @ts-expect-error - módulo vendored sem tipos TypeScript
+import { svgBanco } from '../vendored/bancos-brasil/core.js';
 import { BankMapper } from '../mappers/BankMapper.js';
 import { MemoryCache } from '../cache/MemoryCache.js';
 import type { Participante, Banco, SVGOptions } from '../types/index.js';
